@@ -11,10 +11,10 @@ public:
     Assembly(
         mik::motor intake_motor1,
         mik::motor intake_motor2, 
-        mik::piston middle_goal,
+        mik::piston third_stage_1,
+        mik::piston third_stage_2,
         mik::piston matchload,
-        mik::piston left_wing,
-        mik::piston right_wing
+        mik::piston left_wing
     );
     
     void init();
@@ -22,15 +22,13 @@ public:
 
     void intake_motors_control();
     void Sovereign_piston_control();
-
-    int lift_arm_position = IDLE;
-    vex::task lift_task;
     
     mik::motor intake_motor1;
     mik::motor intake_motor2;
-    mik::piston middle_goal;
+    mik::piston third_stage_1;
+    mik::piston third_stage_2;
     mik::piston matchload;
     mik::piston left_wing;
-    mik::piston right_wing;
-    bool middle_open = false; bool rightwing_open = false; bool leftwing_open = false; bool matchload_open = false;
+   
+    bool third_stage_1_open = false; bool third_stage_2_open = false; bool leftwing_open = false; bool matchload_open = false;
 };

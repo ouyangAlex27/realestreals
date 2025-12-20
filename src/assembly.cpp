@@ -6,17 +6,17 @@ using namespace vex;
 Assembly::Assembly(
     mik::motor intake_motor1, 
     mik::motor intake_motor2,
-    mik::piston middle_goal,
+    mik::piston third_stage_1,
+    mik::piston third_stage_2,
     mik::piston matchload,
-    mik::piston right_wing,
     mik::piston left_wing
 ) :
     // Assign the ports to the devices
     intake_motor1(intake_motor1),
     intake_motor2(intake_motor2),
-    middle_goal(middle_goal),
+    third_stage_1(third_stage_1),
+    third_stage_2(third_stage_2),
     matchload(matchload),
-    right_wing(right_wing),
     left_wing(left_wing) // Make sure when using a 3 wire device that isnt mik::piston you convert the port. `to_triport(PORT_A)`.
 {};
 
@@ -37,22 +37,28 @@ void Assembly::control() {
 // Spins intake forward if L1 is being held, reverse if L2 is being held; stops otherwise
 void Assembly::intake_motors_control() {
     if(Controller.ButtonR1.pressing()){
-        intake_motor1.spin(reverse, 12, volt);
+        third_stage_1.set(true);
+        intake_motor1.spin(fwd, 12, volt);
+        intake_motor2.spin(fwd, 12, volt);
     }
     else if(Controller.ButtonR2.pressing()){
-        intake_motor1.spin(reverse, 12, volt);
-        intake_motor2.spin(reverse, 12, volt);
+        third_stage_1.set(false);
+        intake_motor1.spin(fwd, 12, volt);
+        intake_motor2.spin(fwd , 12, volt);
     }
     else if(Controller.ButtonL1.pressing()){
         intake_motor1.spin(reverse, 12, volt);
-        intake_motor2.spin(reverse, 12, volt);
+        intake_motor2.spin(reverse, 5, volt);
     }
     else if(Controller.ButtonL2.pressing()){
+        third_stage_2.set(true);
         intake_motor1.spin(fwd, 12, volt);
+        intake_motor2.spin(fwd, 12, volt);
     }
     else{
         intake_motor1.stop();
         intake_motor2.stop();
+        third_stage_2.set(false);
     }
 }
 
@@ -90,18 +96,16 @@ void Assembly::Sovereign_piston_control() {
     // --- Middle Goal (Button B) ---
     static bool B_last = false;
     if (Controller.ButtonB.pressing() && !B_last) {
-        middle_open = !middle_open;
-        middle_goal.set(middle_open);
+    
+
+        third_stage_1_open = !third_stage_1_open;
+        third_stage_1.set(third_stage_1_open);
+
+        third_stage_2_open = !third_stage_2_open;
+        third_stage_2.set(third_stage_2_open);
+
     }
     B_last = Controller.ButtonB.pressing();
-
-    // --- Right Wing (Button Y) ---
-    static bool Y_last = false;
-    if (Controller.ButtonY.pressing() && !Y_last) {
-        rightwing_open = !rightwing_open;
-        right_wing.set(rightwing_open);
-    }
-    Y_last = Controller.ButtonY.pressing();
 
     // --- Left Wing (Button Right) ---
     static bool Right_last = false;

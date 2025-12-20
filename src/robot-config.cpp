@@ -21,14 +21,14 @@ static const float MINIMUN_INERTIAL_CALIBRATION_ERROR = .05;
 Chassis chassis(
     // Drivetrain motors
    mik::motor_group({
-		mik::motor(PORT8, false, blue_6_1, "left_front_motor"), 
-		mik::motor(PORT3, true, blue_6_1, "left_middle_motor"), 
-		mik::motor(PORT10, true, blue_6_1, "left_back_motor")
+		mik::motor(PORT5, false, blue_6_1, "left_front_motor"), 
+		mik::motor(PORT4, true, blue_6_1, "left_bottom_motor"), 
+		mik::motor(PORT6, true, blue_6_1, "left_back_motor")
     }),
     mik::motor_group({
-		mik::motor(PORT5, true, blue_6_1, "right_front_motor"), 
-		mik::motor(PORT6, false, blue_6_1, "right_middle_motor"), 
-		mik::motor(PORT7, false, blue_6_1, "right_back_motor")
+		mik::motor(PORT7, true, blue_6_1, "right_front_motor"), 
+		mik::motor(PORT8, false, blue_6_1, "right_bottom_motor"), 
+		mik::motor(PORT9, false, blue_6_1, "right_back_motor")
     }),
 
     PORT19, // Inertia sensor port
@@ -53,12 +53,12 @@ Chassis chassis(
 );
 
 Assembly assembly(
-	mik::motor(PORT2, false, blue_6_1, "intake_motor1"),
-	mik::motor(PORT4, true, blue_6_1, "intake_motor2"),
-	mik::piston(PORT_C),
-	mik::piston(PORT_A),
-	mik::piston(PORT_H),
-	mik::piston(PORT_B)
+	mik::motor(PORT3, false, blue_6_1, "intake_motor1"),
+	mik::motor(PORT10, true, blue_6_1, "intake_motor2"),
+	mik::piston(PORT_E),
+	mik::piston(PORT_F),
+	mik::piston(PORT_G),
+	mik::piston(PORT_H)
 );
 /** Allows UI to display all motor values */
 void log_motors() {

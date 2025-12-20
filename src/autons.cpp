@@ -8,8 +8,8 @@ void default_constants(void) {
     chassis.set_control_constants(5, 10, 1.019, 5, 10, 1.019);
 
     // Each constant set is in the form of (maxVoltage, kP, kI, kD, startI).
-    chassis.set_turn_constants(12, .437, .0215, 3.686, 15);
-    chassis.set_drive_constants(10, 2.5, 3, 12, 0);
+    chassis.set_turn_constants(12, .437, .013, 4.309, 15);
+    chassis.set_drive_constants(10, 1.3, 3, 12, 0);
     chassis.set_heading_constants(6, .4, 0, 1, 0);
     chassis.set_swing_constants(12, .437, .0295, 3.486, 15);
 
@@ -91,7 +91,7 @@ std::string blue_left_winpoint(bool calibrate, auto_variation var, bool get_name
     chassis.turn_to_angle(-120);
     
     chassis.drive_distance(-24);
-    assembly.middle_goal.set(true);
+    
     assembly.intake_motor2.spin(reverse, 12, volt);
     return "";
 }
@@ -170,9 +170,38 @@ std::string red_left_elim(bool calibrate, auto_variation var, bool get_name) {
     if (get_name) { return "red left elim"; }
     if (calibrate) {
         chassis.set_coordinates(0, 0, 0);
-        
+        chassis.set_drive_constants(10, 1.3, 3, 12, 0);
         return "";
     }
+    assembly.intake_motor1.spin(reverse, 12, volt);
+    assembly.intake_motor2.spin(forward, 4, volt);
+    chassis.drive_distance(35, {.max_voltage = 10, .drive_k = { .p = 1.3}});
+    chassis.drive_distance(20, {.max_voltage = 4});
+    
+    chassis.turn_to_angle(-95);
+   
+    chassis.drive_distance(-23, {.max_voltage = 8});
+    assembly.intake_motor1.spin(reverse, 12, volt);
+    assembly.intake_motor2.spin(reverse, 12, volt);
+    wait(1000, msec);
+    assembly.intake_motor2.spin(fwd, 4, volt);
+   
+    chassis.drive_distance(85, {.max_voltage = 12, .drive_k = {.p = 1.3}});
+    assembly.intake_motor1.spin(reverse, 12, volt);
+    assembly.intake_motor2.spin(forward, 4, volt);
+    chassis.turn_to_angle(-142);
+    assembly.matchload.set(true);
+    chassis.drive_distance(33, {.max_voltage = 7});
+    wait(20, msec);
+    chassis.drive_distance(-49);
+    assembly.intake_motor2.spin(reverse, 12, volt);
+    wait(1200,msec);
+    assembly.intake_motor2.stop();
+    assembly.intake_motor1.stop();
+    assembly.matchload.set(false);
+    chassis.right_swing_to_angle(-330);
+    chassis.drive_distance(45, {.max_voltage = 7});
+  
     
     return "";
 }
@@ -187,25 +216,55 @@ std::string red_right_winpoint(bool calibrate, auto_variation var, bool get_name
     return "";
 }
 std::string red_right_sawp(bool calibrate, auto_variation var, bool get_name) {
-    if (get_name) { return "red right sawp"; }
-    if (calibrate) {
-        chassis.set_coordinates(0, 0, 0);
-        
-        return "";
-    }
-    chassis.drive_distance(70, { .drive_k = { .p = 1}});
-    assembly.matchload.set(true);
-    wait(200, msec);
-    assembly.intake_motor1.spin(reverse, 12, volt);
-    chassis.turn_to_angle(90);
-    chassis.drive_distance(20, { .max_voltage = 6, .drive_k = { .p = 3}});
-    wait(250, msec);
-    chassis.drive_distance(-60);
-    assembly.intake_motor2.spin(reverse, 12, volt);
-    wait(500, msec);
-    chassis.drive_distance(-10);
-    return "";
+if (get_name) { return "red right sawp"; }
+if (calibrate) {
+chassis.set_coordinates(0, 0, 0);
+
+return "";
 }
+chassis.drive_distance(70, {.drive_k = {.p = 1.3}});//drive forward
+assembly.matchload.set(true);
+assembly.intake_motor1.spin(reverse, 12, volt);//intake on
+assembly.intake_motor2.spin(fwd, 4, volt);
+chassis.turn_to_angle(90); //turns to face the matchload
+chassis.drive_distance(18, { .max_voltage = 6, .drive_k = {.p = 3}}); //why does p val of 2 make the delay longer while 3 worksd drive to
+wait(150, msec);
+
+chassis.drive_distance(-50); //towards go
+assembly.intake_motor2.spin(reverse, 12, volt);
+wait(1300, msec);
+assembly.intake_motor2.stop();
+assembly.matchload.set(false);
+chassis.drive_distance(35, {.drive_k = {.p = 1.5}});//drive backwards
+chassis.turn_to_angle(-135);
+chassis.drive_distance(60, {.max_voltage = 8}); //forward to score
+chassis.drive_distance(20, {.max_voltage = 4});
+
+assembly.intake_motor1.spin(fwd, 12, volt);
+assembly.intake_motor2.spin(fwd, 4, volt);
+wait(1200, msec);
+assembly.intake_motor1.stop();
+chassis.drive_distance (-18, {.drive_k = {.p = 1.3}});//back from bottom goal
+chassis.turn_to_angle(180);
+
+assembly.intake_motor1.spin(reverse, 12, volt);
+chassis.drive_distance(70,{.max_voltage = 8, .drive_k = {.p = 1.3}}); //other side pickup balls
+
+chassis.drive_distance(18, {.max_voltage = 4});
+
+assembly.intake_motor2.spin(fwd, 6, volt);
+
+chassis.turn_to_angle(135);
+
+chassis.drive_distance(-29,{.drive_k = {.p = 1.5}}); //go score
+assembly.intake_motor1.spin(reverse, 12, volt);
+assembly.intake_motor2.spin(reverse, 4, volt);
+wait(1000, msec);
+chassis.drive_distance(10);
+
+return "";
+}
+
 std::string red_right_elim(bool calibrate, auto_variation var, bool get_name) {   
     if (get_name) { return "red right elim"; }
     if (calibrate) {
